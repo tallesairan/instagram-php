@@ -1,10 +1,10 @@
 <?php
 
-namespace InstagramScraper\Model;
+namespace InstagramPrivate\Model;
 
 /**
  * Class CarouselMedia
- * @package InstagramScraper\Model
+ * @package InstagramPrivate\Model
  */
 class CarouselMedia
 {

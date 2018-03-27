@@ -1,6 +1,6 @@
 <?php
 
-namespace InstagramScraper\Model;
+namespace InstagramPrivate\Model;
 
 
 class Location extends AbstractModel

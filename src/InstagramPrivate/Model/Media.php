@@ -1,12 +1,12 @@
 <?php
 
-namespace InstagramScraper\Model;
+namespace InstagramPrivate\Model;
 
-use InstagramScraper\Endpoints;
+use InstagramPrivate\Endpoints;
 
 /**
  * Class Media
- * @package InstagramScraper\Model
+ * @package InstagramPrivate\Model
  */
 class Media extends AbstractModel
 {

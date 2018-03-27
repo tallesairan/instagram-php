@@ -1,13 +1,13 @@
 <?php
 
-namespace InstagramScraper\Model;
+namespace InstagramPrivate\Model;
 
-use InstagramScraper\Traits\ArrayLikeTrait;
-use InstagramScraper\Traits\InitializerTrait;
+use InstagramPrivate\Traits\ArrayLikeTrait;
+use InstagramPrivate\Traits\InitializerTrait;
 
 /**
  * Class AbstractModel
- * @package InstagramScraper\Model
+ * @package InstagramPrivate\Model
  */
 abstract class AbstractModel implements \ArrayAccess
 {

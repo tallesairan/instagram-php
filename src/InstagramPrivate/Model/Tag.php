@@ -1,10 +1,10 @@
 <?php
 
-namespace InstagramScraper\Model;
+namespace InstagramPrivate\Model;
 
 /**
  * Class Tag
- * @package InstagramScraper\Model
+ * @package InstagramPrivate\Model
  */
 class Tag extends AbstractModel
 {

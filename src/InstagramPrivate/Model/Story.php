@@ -1,10 +1,10 @@
 <?php
 
-namespace InstagramScraper\Model;
+namespace InstagramPrivate\Model;
 
 /**
  * Class Story
- * @package InstagramScraper\Model
+ * @package InstagramPrivate\Model
  */
 class Story extends Media
 {

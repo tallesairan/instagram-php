@@ -1162,7 +1162,15 @@ class Instagram
 
         return $this->generateHeaders($this->userSession);
     }
-    public function Weblogin($force = false, $support_two_step_verification = false)
+
+	/**
+	 * @param bool $force
+	 * @param bool $support_two_step_verification
+	 *
+	 * @return array
+	 * @throws InstagramAuthException
+	 */
+	public function Weblogin($force = false, $support_two_step_verification = false)
     {
         if ($this->sessionUsername == null || $this->sessionPassword == null) {
            return (['status'=>9,'message'=>"User credentials not provided"]);
@@ -1276,7 +1284,14 @@ class Instagram
         return true;
     }
 
-    private function verifyTwoStep($response, $cookies)
+	/**
+	 * @param $response
+	 * @param $cookies
+	 *
+	 * @return array
+	 * @throws InstagramAuthException
+	 */
+	private function verifyTwoStep($response, $cookies)
     {
         $new_cookies = static::parseCookies($response->headers['Set-Cookie']);
         $cookies = array_merge($cookies, $new_cookies);
@@ -1359,6 +1374,105 @@ class Instagram
 		    'code'=>$response->code,
 		    'message'=>'checkpoint_required',
 		    'headers'=>$response->headers,
+		    'body'=>$response->raw_body
+	    ]);
+
+    }
+
+	/**
+	 * @param $response
+	 * @param $cookies
+	 *
+	 * @return array
+	 */
+	private function firstStep($response, $cookies) {
+	    $cachedString = static::$instanceCache->getItem( 'checkpoint_' . $this->sessionUsername );
+	    $new_cookies  = static::parseCookies( $response->headers['Set-Cookie'] );
+	    //$session      = $cachedString->get();
+	    $cookies       = array_merge( $cookies, $new_cookies );
+	    $cachedString->set( $cookies );
+	    static::$instanceCache->save( $cachedString );
+	    $cookie_string = '';
+	    foreach ( $cookies as $name => $value ) {
+		    $cookie_string .= $name . "=" . $value . "; ";
+	    }
+	    $headers = [
+		    'cookie'      => $cookie_string,
+		    'referer'     => Endpoints::LOGIN_URL,
+		    'x-csrftoken' => $cookies['csrftoken']
+	    ];
+
+	    $url      = Endpoints::BASE_URL . $response->body->checkpoint_url;
+	    $response = Request::get( $url, $headers );
+	    if ( preg_match( '/window._sharedData\s\=\s(.*?)\;<\/script>/', $response->raw_body, $matches ) ) {
+		    $data = json_decode( $matches[1], true, 512, JSON_BIGINT_AS_STRING );
+		    if ( ! empty( $data['entry_data']['Challenge'][0]['extraData']['content'][3]['fields'][0]['values'] ) ) {
+			    $choices = $data['entry_data']['Challenge'][0]['extraData']['content'][3]['fields'][0]['values'];
+		    } elseif ( ! empty( $data['entry_data']['Challenge'][0]['fields'] ) ) {
+			    $fields = $data['entry_data']['Challenge'][0]['fields'];
+			    if ( ! empty( $fields['email'] ) ) {
+				    $choices[] = [ 'label' => 'e-Mail: ' . $fields['email'], 'value' => 1 ];
+			    }
+			    if ( ! empty( $fields['phone_number'] ) ) {
+				    $choices[] = [ 'label' => 'Telefone: ' . $fields['phone_number'], 'value' => 0 ];
+			    }
+		    }
+
+		    return [
+		    	'url'=>$url,
+		    	'headers'=>$headers,
+			    'choices'=>$choices
+		    ];
+	    }
+    }
+
+	/**
+	 * @param $data
+	 *
+	 * @return array
+	 */
+	private function secondStep($data) {
+	    $cachedString = static::$instanceCache->getItem( 'checkpoint_' . $this->sessionUsername );
+	    $session      = $cachedString->get();
+	    $response = Request::post( $data['url'], $data['headers'], [ 'choice' => $data['choice'] ] );
+
+	    if ( ! preg_match( '/name="security_code"/', $response->raw_body, $matches ) ) {
+		    return [ 'status'  => 9,
+		             'message' => 'não foi possível enviar o código para você, tente novamente mais tarde'
+		    ];
+		    //throw new InstagramAuthException('Something went wrong when try two step verification. Please report issue.');
+	    }
+	    $data['status'] = 2;
+
+	    return $data;
+    }
+
+	/**
+	 * @param $data
+	 *
+	 * @return array
+	 */
+	private function thirdStep($data){
+	     $cachedString = static::$instanceCache->getItem( 'checkpoint_' . $this->sessionUsername );
+	     $session = $cachedString->get();
+        $post_data = [
+            'csrfmiddlewaretoken' => $session['csrftoken'],
+            'verify' => 'Verify Account',
+            'security_code' => $data['security_code'],
+        ];
+
+        $response = Request::post($data['url'], $data['headers'], $post_data);
+        if ($response->code !== 200) {
+	        return [ 'status'  => 9,
+	                 'message' => 'Não foi possível Validar o código para você, tente novamente mais tarde'
+	        ];
+        }
+
+	    return ([
+		    'status'=>1,
+		    'code'=>$response->code,
+		    'message'=>'checkpoint completo',
+		    'headers'=>$data['headers'],
 		    'body'=>$response->raw_body
 	    ]);
 

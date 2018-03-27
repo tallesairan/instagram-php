@@ -2,8 +2,8 @@
 
 require '../vendor/autoload.php';
 
-use InstagramScraper\Instagram;
-use InstagramScraper\Model\Media;
+use InstagramPrivate\Instagram;
+use InstagramPrivate\Model\Media;
 use phpFastCache\CacheManager;
 use PHPUnit\Framework\TestCase;
 
@@ -45,7 +45,7 @@ class InstagramTest extends TestCase
     public function testGetAccountByIdWithInvalidNumericId()
     {
         // PHP_INT_MAX is far larger than the greatest id so far and thus does not represent a valid account.
-        $this->expectException(\InstagramScraper\Exception\InstagramException::class);
+        $this->expectException(\InstagramPrivate\Exception\InstagramException::class);
         self::$instagram->getAccountById(PHP_INT_MAX);
     }
 
