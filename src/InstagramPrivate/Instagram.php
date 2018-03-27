@@ -1,18 +1,16 @@
 <?php
-
-namespace InstagramScraper;
-
-use InstagramScraper\Exception\InstagramAuthException;
-use InstagramScraper\Exception\InstagramException;
-use InstagramScraper\Exception\InstagramNotFoundException;
-use InstagramScraper\Model\Account;
-use InstagramScraper\Model\Comment;
-use InstagramScraper\Model\Like;
-use InstagramScraper\Model\Location;
-use InstagramScraper\Model\Media;
-use InstagramScraper\Model\Story;
-use InstagramScraper\Model\Tag;
-use InstagramScraper\Model\UserStories;
+namespace InstagramPrivate;
+use InstagramPrivate\Exception\InstagramAuthException;
+use InstagramPrivate\Exception\InstagramException;
+use InstagramPrivate\Exception\InstagramNotFoundException;
+use InstagramPrivate\Model\Account;
+use InstagramPrivate\Model\Comment;
+use InstagramPrivate\Model\Like;
+use InstagramPrivate\Model\Location;
+use InstagramPrivate\Model\Media;
+use InstagramPrivate\Model\Story;
+use InstagramPrivate\Model\Tag;
+use InstagramPrivate\Model\UserStories;
 use phpFastCache\CacheManager;
 use Unirest\Request;
 use Response;
