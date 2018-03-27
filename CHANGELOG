@@ -1,5 +1,9 @@
-                   Instagram PHP Scraper Change Log
+                   Instagram Private Change Log
                    ================================
+Version v0.4.6
+--------------
+- Enh: you cant setup now curlopts
+
 Version v0.4.5
 --------------
 - Enh: BIG thing. Get best resolutions for medias possible
