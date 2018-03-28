@@ -33,7 +33,7 @@ class Instagram
 	private $sessionUsername;
 	private $sessionPassword;
 	private $userSession;
-	private $userAgent ='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36';
+	private $userAgent = null;
 
 	/**
 	 * @param string $username
@@ -42,8 +42,7 @@ class Instagram
 	 *
 	 * @return Instagram
 	 */
-	public static function withCredentials($username, $password, $sessionFolder = null)
-	{
+	public static function InstanceCache($sessionFolder = null){
 		if (is_null($sessionFolder)) {
 			$sessionFolder = __DIR__ . DIRECTORY_SEPARATOR . 'sessions' . DIRECTORY_SEPARATOR;
 		}
@@ -58,6 +57,10 @@ class Instagram
 		} else {
 			static::$instanceCache = $sessionFolder;
 		}
+	}
+	public static function withCredentials($username, $password, $sessionFolder = null)
+	{
+
 
 		$instance = new self();
 		$instance->sessionUsername = $username;
@@ -236,8 +239,6 @@ class Instagram
 				'cookie' => $cookies,
 				'referer' => Endpoints::BASE_URL . '/',
 				'x-csrftoken' => $session['csrftoken'],
-				'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
-
 			];
 		}
 
@@ -1219,14 +1220,12 @@ class Instagram
 		$session = $cachedString->get();
 		if ($force || !$this->isLoggedIn($session)) {
 			$headersx = [
-				#'cookie' => "ig_pr=1; ig_vw=1920; ig_or=landscape-primary; ig_vh=860;",
 				'Accept-Language:pt-BR,pt;q=0.8,en-US;q=0.6,en;q=0.4',
 				'Cache-Control:max-age=0',
 				'Connection:keep-alive',
 				'upgrade-insecure-requests:1',
 				'x-instagram-ajax:1',
 				'x-requested-with:XMLHttpRequest',
-				'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
 				'content-type:application/x-www-form-urlencoded',
 				'origin:https://www.instagram.com',
 				'referer:https://www.google.com/'
@@ -1241,11 +1240,10 @@ class Instagram
 				]);
 			}
 			$cookies = static::parseCookies($response->headers['Set-Cookie']);
-			$cookiesOR = $response->headers['Set-Cookie'];
 			$mid = $cookies['mid'];
 			$csrfToken = $cookies['csrftoken'];
 			$headers = [
-				'cookie' => "csrftoken=$csrfToken; mid=$mid;ig_pr=1; ig_vw=1920; ig_or=landscape-primary; ig_vh=860;",
+				'cookie' => "csrftoken=$csrfToken; mid=$mid;",
 				'referer' => Endpoints::BASE_URL . '/',
 				'x-csrftoken' => $csrfToken,
 				'Accept-Language:en-US,en;q=0.9,pt-ST;q=0.8,pt-PT;q=0.7,pt;q=0.6',
@@ -1256,8 +1254,6 @@ class Instagram
 				'x-requested-with:XMLHttpRequest',
 				'content-type:application/x-www-form-urlencoded',
 				'origin:https://www.instagram.com',
-				'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
-
 				'referer:https://www.instagram.com/',
 			];
 			$response = Request::post(Endpoints::LOGIN_URL, $headers,
@@ -1269,13 +1265,11 @@ class Instagram
 					return ([
 						'status'=>3,
 						'code'=>$response->code,
-						'message'=>'Response code is  Body: ' . ($response->raw_body) . ' Something went wrong. Please report issue.',
+						'message'=>'Checkpoint informado',
 						'body'=>(array) $response->body,
 						'cookies-firstRequest'=> $cookies,
-						'cookies-firstRequest-original'=> $cookiesOR,
 						'headers-firstRequest'=> $headersx,
 						'cookies'=> static::parseCookies($response->headers['Set-Cookie']),
-						'cookies-original'=> $response->headers['Set-Cookie'],
 						'headers'=> $headers,
 					]);
 				} elseif ((is_string($response->code) || is_numeric($response->code)) && is_string($response->raw_body)) {
