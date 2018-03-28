@@ -1241,23 +1241,23 @@ class Instagram
 					return ([
 						'status'=>3,
 						'code'=>$response->code,
-						'message'=>'Response code is ' . $response->code . '. Body: ' . ($response->body) . ' Something went wrong. Please report issue.',
-						'body'=>$response->body,
+						'message'=>'Response code is  Body: ' . ($response->raw_body) . ' Something went wrong. Please report issue.',
+						'body'=>$response->raw_body,
 						'cookies'=> static::parseCookies($cookies)
 					]);
-				} elseif ((is_string($response->code) || is_numeric($response->code)) && is_string($response->body)) {
+				} elseif ((is_string($response->code) || is_numeric($response->code)) && is_string($response->raw_body)) {
 					return ([
 						'status'=>8,
 						'code'=>$response->code,
-						'message'=>'Response code is ' . $response->code . '. Body: ' . ($response->body) . ' Something went wrong. Please report issue.',
-						'body'=>$response->body
+						'message'=>'Response code is ' . $response->code . '. Body: ' . ($response->raw_body) . ' Something went wrong. Please report issue.',
+						'body'=>$response->raw_body
 					]);
 				} else {
 					return ([
 						'status'=>8,
 						'code'=>$response->code,
-						'message'=>'Response code is ' . print_r($response->code,1). '. Body: ' .print_r($response->body,1) . ' Something went wrong. Please report issue.',
-						'body'=>$response->body
+						'message'=>'Response code is ' . print_r($response->code,1). '. Body: ' .print_r($response->raw_body,1) . ' Something went wrong. Please report issue.',
+						'body'=>$response->raw_body
 					]);
 				}
 			}
