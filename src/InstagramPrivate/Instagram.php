@@ -1350,7 +1350,12 @@ class Instagram
 		            'referer' => Endpoints::BASE_URL . '/',
 		            'x-csrftoken' => $csrfToken,
 		];
-		$response = Request::get(Endpoints::BASE_URL, $headers);
+		try{
+			$response = Request::get(Endpoints::BASE_URL,$headers);
+		}
+		catch (Exception $e){
+			return false;
+		}
 		if ($response->code !== 200) {
 			return false;
 		}
