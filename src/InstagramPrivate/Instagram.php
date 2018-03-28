@@ -1215,7 +1215,7 @@ class Instagram
 	 * @return mixed
 	 */
 	public function getSession($username){
-		$cachedString = static::$instanceCache->getItem($this->sessionUsername);
+		$cachedString = static::$instanceCache->getItem($username);
 		return $cachedString;
 	}
 
