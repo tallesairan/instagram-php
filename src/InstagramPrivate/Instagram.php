@@ -1208,6 +1208,18 @@ class Instagram
 			]);
 		}
 	}
+
+	/**
+	 * @param $username
+	 *
+	 * @return mixed
+	 */
+	public function getSession($username){
+		$cachedString = static::$instanceCache->getItem($this->sessionUsername);
+		return $cachedString;
+	}
+
+
 	/**
 	 * @param bool $force
 	 * @param bool $support_two_step_verification
