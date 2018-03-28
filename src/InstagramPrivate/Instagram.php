@@ -45,7 +45,7 @@ class Instagram
 	 *
 	 * @return Instagram
 	 */
-	public static function InstanceCache($sessionFolder = null){
+	public static function InstanceCache($sessionFolder = null,$driver = 'predis'){
 		if (is_null($sessionFolder)) {
 			$sessionFolder = __DIR__ . DIRECTORY_SEPARATOR . 'sessions' . DIRECTORY_SEPARATOR;
 		}
@@ -56,19 +56,7 @@ class Instagram
 
 				'ignoreSymfonyNotice' => true,
 			]);
-			static::$instanceCache = CacheManager::getInstance('mongodb', [
-				'host' => '127.0.0.1',
-				'port' => '27017',
-				'username' => '',
-				'password' => '',
-				'timeout' => '1',
-				/**
-				 * These ones are
-				 * totally optional
-				 */
-				 'collectionName' => 'Cache',
-				 'databaseName' => 'phpFastCache'
-			]);
+			static::$instanceCache = CacheManager::getInstance($driver);
 
 
 		} else {
