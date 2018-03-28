@@ -227,6 +227,32 @@ class Instagram
 		return $accounts;
 	}
 
+
+	/**
+	 * @param $session
+	 *
+	 * @return array
+	 */
+	public function generatePostHeaders($session)
+	{
+		$headers = [];
+		if ($session) {
+			$cookies = '';
+			foreach ($session as $key => $value) {
+				$cookies .= "$key=$value; ";
+			}
+			$headers = [
+				'cookie' => $cookies,
+
+				'x-csrftoken' => $session['csrftoken'],
+			];
+		}
+
+
+
+		return $headers;
+	}
+
 	/**
 	 * @param $session
 	 *
