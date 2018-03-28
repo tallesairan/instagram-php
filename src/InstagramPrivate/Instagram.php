@@ -1206,8 +1206,14 @@ class Instagram
 
 			if ($response->code !== 200) {
 				if ($response->code === 400 && isset($response->body->message) && $response->body->message == 'checkpoint_required' && $support_two_step_verification) {
-					return $this->firstStep($response, $cookies);
-
+					// return $this->firstStep($response, $cookies);
+					return ([
+						'status'=>3,
+						'code'=>$response->code,
+						'message'=>'Response code is ' . $response->code . '. Body: ' . ($response->body) . ' Something went wrong. Please report issue.',
+						'body'=>$response->body,
+						'cookies'=> static::parseCookies($cookies)
+					]);
 				} elseif ((is_string($response->code) || is_numeric($response->code)) && is_string($response->body)) {
 					return ([
 						'status'=>8,
@@ -1392,7 +1398,7 @@ class Instagram
 	 *
 	 * @return array
 	 */
-	private function firstStep($response, $cookies) {
+	public function firstStep($response, $cookies) {
 		$cachedString = static::$instanceCache->getItem( 'checkpoint_' . $this->sessionUsername );
 		$new_cookies  = static::parseCookies( $response->headers['Set-Cookie'] );
 		//$session      = $cachedString->get();
@@ -1433,6 +1439,14 @@ class Instagram
 				'choices'=>$choices
 			];
 		}
+		else{
+			return [
+				'status'=>4,
+				'message'=>'Checkpoint Normal',
+				'url'=>$url,
+				'headers'=>$headers
+			];
+		}
 	}
 
 	/**
@@ -1440,14 +1454,15 @@ class Instagram
 	 *
 	 * @return array
 	 */
-	private function secondStep($data) {
+	public function secondStep($data) {
 		$cachedString = static::$instanceCache->getItem( 'checkpoint_' . $this->sessionUsername );
 		$session      = $cachedString->get();
 		$response = Request::post( $data['url'], $data['headers'], [ 'choice' => $data['choice'] ] );
 
 		if ( ! preg_match( '/name="security_code"/', $response->raw_body, $matches ) ) {
-			return [ 'status'  => 9,
-			         'message' => 'não foi possível enviar o código para você, tente novamente mais tarde'
+			return [
+				'status'  => 9,
+				'message' => 'não foi possível enviar o código para você, tente novamente mais tarde'
 			];
 			//throw new InstagramAuthException('Something went wrong when try two step verification. Please report issue.');
 		}
@@ -1461,7 +1476,7 @@ class Instagram
 	 *
 	 * @return array
 	 */
-	private function thirdStep($data){
+	public function thirdStep($data){
 		$cachedString = static::$instanceCache->getItem( 'checkpoint_' . $this->sessionUsername );
 		$session = $cachedString->get();
 		$post_data = [
