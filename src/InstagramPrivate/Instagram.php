@@ -34,7 +34,7 @@ class Instagram
 	private $sessionUsername;
 	private $sessionPassword;
 	private $userSession;
-	private $userAgent = null;
+	private $userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36';
 
 	/**
 	 * @param string $username
@@ -1249,7 +1249,7 @@ class Instagram
 			$mid = $cookies['mid'];
 			$csrfToken = $cookies['csrftoken'];
 			$headers = [
-				'cookie' => "csrftoken=$csrfToken; mid=$mid;",
+				'cookie' => "csrftoken=$csrfToken; mid=$mid; ig_pr=1; ig_vh=860; ig_or=landscape-primary; ig_vw=1920",
 				'referer' => Endpoints::BASE_URL . '/',
 				'x-csrftoken' => $csrfToken,
 				'Accept-Language:en-US,en;q=0.9,pt-ST;q=0.8,pt-PT;q=0.7,pt;q=0.6',
