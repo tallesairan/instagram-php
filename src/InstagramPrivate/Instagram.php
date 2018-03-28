@@ -33,7 +33,7 @@ class Instagram
 	private $sessionUsername;
 	private $sessionPassword;
 	private $userSession;
-	private $userAgent = null;
+	private $userAgent ='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36';
 
 	/**
 	 * @param string $username
@@ -236,6 +236,8 @@ class Instagram
 				'cookie' => $cookies,
 				'referer' => Endpoints::BASE_URL . '/',
 				'x-csrftoken' => $session['csrftoken'],
+				'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
+
 			];
 		}
 
@@ -1224,6 +1226,7 @@ class Instagram
 				'upgrade-insecure-requests:1',
 				'x-instagram-ajax:1',
 				'x-requested-with:XMLHttpRequest',
+				'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
 				'content-type:application/x-www-form-urlencoded',
 				'origin:https://www.instagram.com',
 				'referer:https://www.google.com/'
@@ -1253,6 +1256,8 @@ class Instagram
 				'x-requested-with:XMLHttpRequest',
 				'content-type:application/x-www-form-urlencoded',
 				'origin:https://www.instagram.com',
+				'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
+
 				'referer:https://www.instagram.com/',
 			];
 			$response = Request::post(Endpoints::LOGIN_URL, $headers,
