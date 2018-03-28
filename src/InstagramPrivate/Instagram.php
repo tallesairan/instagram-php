@@ -1237,6 +1237,7 @@ class Instagram
 				]);
 			}
 			$cookies = static::parseCookies($response->headers['Set-Cookie']);
+			$cookiesOR = $response->headers['Set-Cookie'];
 			$mid = $cookies['mid'];
 			$csrfToken = $cookies['csrftoken'];
 			$headers = [
@@ -1265,8 +1266,10 @@ class Instagram
 						'message'=>'Response code is  Body: ' . ($response->raw_body) . ' Something went wrong. Please report issue.',
 						'body'=>(array) $response->body,
 						'cookies-firstRequest'=> $cookies,
+						'cookies-firstRequest-original'=> $cookiesOR,
 						'headers-firstRequest'=> $headersx,
 						'cookies'=> static::parseCookies($response->headers['Set-Cookie']),
+						'cookies-original'=> $response->headers['Set-Cookie'],
 						'headers'=> $headers,
 					]);
 				} elseif ((is_string($response->code) || is_numeric($response->code)) && is_string($response->raw_body)) {
