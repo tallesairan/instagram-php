@@ -54,7 +54,21 @@ class Instagram
 
 				'ignoreSymfonyNotice' => true,
 			]);
-			static::$instanceCache = CacheManager::getInstance('files');
+			static::$instanceCache = CacheManager::getInstance('mongodb', [
+				'host' => '127.0.0.1',
+				'port' => '27017',
+				'username' => '',
+				'password' => '',
+				'timeout' => '1',
+				/**
+				 * These ones are
+				 * totally optional
+				 */
+				 'collectionName' => 'Cache',
+				 'databaseName' => 'phpFastCache'
+			]);
+
+
 		} else {
 			static::$instanceCache = $sessionFolder;
 		}
@@ -1308,7 +1322,7 @@ class Instagram
 
 			$cookies = static::parseCookies($response->headers['Set-Cookie']);
 			$cookies['mid'] = $mid;
-			$cachedString->set($cookies);
+			$cachedString->set($cookies)->expiresAfter(99994000);
 			static::$instanceCache->save($cachedString);
 			$this->userSession = $cookies;
 			return ([
