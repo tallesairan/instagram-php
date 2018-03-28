@@ -1169,6 +1169,37 @@ class Instagram
 		return $this->generateHeaders($this->userSession);
 	}
 
+
+	/**
+	 * @param $user
+	 *
+	 * @return array
+	 */
+	public function CheckLogged($user){
+		$cachedString = static::$instanceCache->getItem($user);
+		$session = $cachedString->get();
+		if ($this->isLoggedIn($session)) {
+
+
+			return ([
+				'status'=>1,
+				'code'=>200,
+				'message'=>'Success',
+				'headers'=>$this->generateHeaders($session),
+				'userSession'=>$session,
+				'body'=>["authenticated"=>true, "status"=>"ok"]
+			]);
+		}
+		else{
+			return ([
+				'status'=>0,
+				'code'=>301,
+				'message'=>'Error',
+				'headers'=>null,
+				'userSession'=>null
+			]);
+		}
+	}
 	/**
 	 * @param bool $force
 	 * @param bool $support_two_step_verification
