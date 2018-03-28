@@ -1226,7 +1226,7 @@ class Instagram
 				'content-type:application/x-www-form-urlencoded',
 				'origin:https://www.instagram.com',
 				'referer:https://www.google.com/'
-				];
+			];
 			$response = Request::get(Endpoints::BASE_URL,$headersx);
 			if ($response->code !== 200) {
 				return ([
@@ -1240,21 +1240,21 @@ class Instagram
 			$mid = $cookies['mid'];
 			$csrfToken = $cookies['csrftoken'];
 			$headers = [
-						'cookie' => "csrftoken=$csrfToken; mid=$mid;",
-			            'referer' => Endpoints::BASE_URL . '/',
-			            'x-csrftoken' => $csrfToken,
-						'Accept-Language:pt-BR,pt;q=0.8,en-US;q=0.6,en;q=0.4',
-						'Cache-Control:max-age=0',
-						'Connection:keep-alive',
-						'upgrade-insecure-requests:1',
-						'x-instagram-ajax:1',
-						'x-requested-with:XMLHttpRequest',
-						'content-type:application/x-www-form-urlencoded',
-						'origin:https://www.instagram.com',
-						'referer:https://www.instagram.com/',
+				'cookie' => "csrftoken=$csrfToken; mid=$mid;",
+				'referer' => Endpoints::BASE_URL . '/',
+				'x-csrftoken' => $csrfToken,
+				'Accept-Language:en-US,en;q=0.9,pt-ST;q=0.8,pt-PT;q=0.7,pt;q=0.6',
+				'Cache-Control:max-age=0',
+				'Connection:keep-alive',
+				'upgrade-insecure-requests:1',
+				'x-instagram-ajax:1',
+				'x-requested-with:XMLHttpRequest',
+				'content-type:application/x-www-form-urlencoded',
+				'origin:https://www.instagram.com',
+				'referer:https://www.instagram.com/',
 			];
 			$response = Request::post(Endpoints::LOGIN_URL, $headers,
-				['username' => $this->sessionUsername, 'password' => $this->sessionPassword]);
+				['next'=>'/','username' => $this->sessionUsername, 'password' => $this->sessionPassword]);
 
 			if ($response->code !== 200) {
 				if ($response->code === 400 && isset($response->body->message) && $response->body->message == 'checkpoint_required' && $support_two_step_verification) {
@@ -1263,8 +1263,11 @@ class Instagram
 						'status'=>3,
 						'code'=>$response->code,
 						'message'=>'Response code is  Body: ' . ($response->raw_body) . ' Something went wrong. Please report issue.',
-						'body'=>$response->raw_body,
-						'cookies'=> static::parseCookies($cookies)
+						'body'=>(array) $response->body,
+						'cookies-firstRequest'=> $cookies,
+						'headers-firstRequest'=> $headersx,
+						'cookies'=> static::parseCookies($response->headers['Set-Cookie']),
+						'headers'=> $headers,
 					]);
 				} elseif ((is_string($response->code) || is_numeric($response->code)) && is_string($response->raw_body)) {
 					return ([
