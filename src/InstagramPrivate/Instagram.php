@@ -12,6 +12,7 @@ use InstagramPrivate\Model\Story;
 use InstagramPrivate\Model\Tag;
 use InstagramPrivate\Model\UserStories;
 use phpFastCache\CacheManager;
+use Unirest\Exception;
 use Unirest\Request;
 use Response;
 
@@ -1230,7 +1231,12 @@ class Instagram
 				'origin:https://www.instagram.com',
 				'referer:https://www.google.com/'
 			];
-			$response = Request::get(Endpoints::BASE_URL,$headersx);
+			try{
+				$response = Request::get(Endpoints::BASE_URL,$headersx);
+			}
+			catch (Exception $e){
+				return false;
+			}
 			if ($response->code !== 200) {
 				return ([
 					'status'=>9,
