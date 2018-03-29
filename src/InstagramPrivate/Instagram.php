@@ -36,7 +36,7 @@ class Instagram
 	private $sessionUsername;
 	private $sessionPassword;
 	private $userSession;
-	private $userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36';
+	private $userAgent = 'Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36';
 
 	/**
 	 * @param string $username
@@ -273,9 +273,9 @@ class Instagram
 			];
 		}
 
-		if ($this->getUserAgent()) {
-			$headers['user-agent'] = $this->getUserAgent();
-		}
+
+			$headers['user-agent'] = $this->userAgent;
+
 
 		return $headers;
 	}
@@ -1350,7 +1350,7 @@ class Instagram
 
 			$cookies = static::parseCookies($response->headers['Set-Cookie']);
 			$cookies['mid'] = $mid;
-			$cachedString->set($cookies)->expiresAfter(99994000);
+			$cachedString->set($cookies)->expiresAfter(9999400);
 			static::$instanceCache->save($cachedString);
 			$this->userSession = $cookies;
 			return ([
