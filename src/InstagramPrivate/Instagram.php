@@ -1271,7 +1271,9 @@ class Instagram
 				'x-requested-with:XMLHttpRequest',
 				'content-type:application/x-www-form-urlencoded',
 				'origin:https://www.instagram.com',
-				'referer:https://www.google.com/'
+				'referer:https://www.google.com/',
+				'user-agent: '.$this->userAgent
+
 			];
 			try{
 				$response = Request::get(Endpoints::BASE_URL,$headersx);
@@ -1303,6 +1305,8 @@ class Instagram
 				'content-type:application/x-www-form-urlencoded',
 				'origin:https://www.instagram.com',
 				'referer:https://www.instagram.com/',
+				'user-agent: '.$this->userAgent
+
 			];
 			$response = Request::post(Endpoints::LOGIN_URL, $headers,
 				['next'=>'/','username' => $this->sessionUsername, 'password' => $this->sessionPassword]);
