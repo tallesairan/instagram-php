@@ -472,6 +472,13 @@ class Instagram
 		return $this->getMediaByUrl($url);
 
 	}
+
+	/**
+	 * @param $url
+	 * @param $ip
+	 *
+	 * @return mixed
+	 */
 	public function simpleCurl($url,$ip){
 
 			$header1 = [];
@@ -504,15 +511,9 @@ class Instagram
 
 			curl_setopt($ch, CURLOPT_USERAGENT, $this->userAgent);
 			$returns = curl_exec($ch);
-			if($returns){
-				curl_close($ch);
-				return $returns;
-			}
-			else{
-				curl_close($ch);
-				return false;
-			}
 
+			curl_close($ch);
+			return $returns;
 
 
 	}
@@ -539,7 +540,7 @@ class Instagram
 		];
 
 		$response = $this->simpleCurl(Endpoints::getAccountMediasJsonLink($account->getId(), $maxId),$ip);
-
+		print $response;
 		// use a raw constant in the code is not a good idea!!
 		//if ($response->code !== 200) {
 		if (!$response) {
