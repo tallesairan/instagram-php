@@ -45,6 +45,31 @@ class Instagram
 	 *
 	 * @return Instagram
 	 */
+	public static function InstanceCache($sessionFolder = null,$driver = 'predis'){
+		if (is_null($sessionFolder)) {
+			$sessionFolder = __DIR__ . DIRECTORY_SEPARATOR . 'sessions' . DIRECTORY_SEPARATOR;
+		}
+		if (is_string($sessionFolder)) {
+			CacheManager::setDefaultConfig([
+				'path' => $sessionFolder,
+				'defaultTtl' => 12900, // Default time-to-live in seconds
+
+				'ignoreSymfonyNotice' => true,
+			]);
+			static::$instanceCache = CacheManager::getInstance($driver);
+
+
+		} else {
+			static::$instanceCache = $sessionFolder;
+		}
+	}
+
+	/**
+	 * @param null $sessionFolder
+	 * @param string $driver
+	 *
+	 * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
+	 */
 	public static function InsCache($sessionFolder = null,$driver = 'predis'){
 		if (is_null($sessionFolder)) {
 			$sessionFolder = __DIR__ . DIRECTORY_SEPARATOR . 'sessions' . DIRECTORY_SEPARATOR;
@@ -63,6 +88,7 @@ class Instagram
 			static::$instanceCache = $sessionFolder;
 		}
 	}
+
 	public static function withCredentials($username, $password, $sessionFolder = null)
 	{
 
