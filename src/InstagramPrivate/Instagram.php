@@ -45,7 +45,7 @@ class Instagram
 	 *
 	 * @return Instagram
 	 */
-	public static function InstanceCache($sessionFolder = null,$driver = 'predis'){
+	public static function InsCache($sessionFolder = null,$driver = 'predis'){
 		if (is_null($sessionFolder)) {
 			$sessionFolder = __DIR__ . DIRECTORY_SEPARATOR . 'sessions' . DIRECTORY_SEPARATOR;
 		}
