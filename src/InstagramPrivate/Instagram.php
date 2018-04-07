@@ -541,6 +541,8 @@ class Instagram
 
 		$response = $this->simpleCurl(Endpoints::getAccountMediasJsonLink($account->getId(), $maxId),$ip);
 		print $response;
+		print "Account:".print_r($account,1);
+		print "url:".Endpoints::getAccountMediasJsonLink($account->getId(), $maxId);
 		// use a raw constant in the code is not a good idea!!
 		//if ($response->code !== 200) {
 		if (!$response) {
