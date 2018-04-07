@@ -474,60 +474,13 @@ class Instagram
 	}
 
 	/**
-	 * @param $url
-	 * @param $ip
-	 *
-	 * @return mixed
-	 */
-	public function simpleCurl($url,$ip){
-
-			$header1 = [];
-			$header1[] = 'Accept-Language:pt-BR,pt;q=0.8,en-US;q=0.6,en;q=0.4';
-			$header1[] = 'Cache-Control:max-age=0';
-			$header1[] = 'Connection:keep-alive';
-			$header1[] = 'upgrade-insecure-requests:1';
-
-			$header1[] = 'x-instagram-ajax:1';
-			$header1[] = 'x-requested-with:XMLHttpRequest';
-			$header1[] = 'content-type:application/x-www-form-urlencoded';
-			$header1[] = 'content-length:0';
-			$header1[] = 'origin:https://www.instagram.com';
-			$header1[] = 'Referer:https://www.instagram.com/instagrambr/';
-			$header1[] = 'accept:*/*';
-
-			$ch = curl_init($url);
-			$cookie_jar = tempnam('/tmp','cookie');
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-			curl_setopt($ch, CURLOPT_INTERFACE, $ip);
-			curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V6);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, $header1);
-			curl_setopt( $ch, CURLOPT_COOKIESESSION, true );
-			curl_setopt( $ch, CURLOPT_COOKIEJAR, $cookie_jar );
-
-
-
-			curl_setopt($ch, CURLOPT_USERAGENT, $this->userAgent);
-			$returns = curl_exec($ch);
-
-			curl_close($ch);
-			return $returns;
-
-
-	}
-
-	/**
-	 * @param $username
-	 * @param $ip
+	 * @param string $username
 	 * @param string $maxId
 	 *
 	 * @return array
 	 * @throws InstagramException
-	 * @throws InstagramNotFoundException
 	 */
-	public function getPaginateMedias($username,$ip, $maxId = '')
+	public function getPaginateMedias($username, $maxId = '')
 	{
 		$account = $this->getAccount($username);
 		$hasNextPage = true;
@@ -539,17 +492,16 @@ class Instagram
 			'hasNextPage' => $hasNextPage,
 		];
 
-		$response = $this->simpleCurl(Endpoints::getAccountMediasJsonLink($account->getId(), $maxId),$ip);
-		print $response;
-		print "Account:".print_r($account,1);
-		print "url:".Endpoints::getAccountMediasJsonLink($account->getId(), $maxId);
+		$response = Request::get(Endpoints::getAccountMediasJsonLink($account->getId(), $maxId),
+			$this->generateHeaders($this->userSession));
+
 		// use a raw constant in the code is not a good idea!!
 		//if ($response->code !== 200) {
-		if (!$response) {
-			throw new InstagramException('Response code is '. print_r($response,1).' Something went wrong. Please report issue.');
+		if (static::HTTP_OK !== $response->code) {
+			throw new InstagramException('Response code is ' . $response->code . '. Body: ' . static::getErrorBody($response->body) . ' Something went wrong. Please report issue.');
 		}
 
-		$arr = json_decode($response, true, 512, JSON_BIGINT_AS_STRING);
+		$arr = json_decode($response->raw_body, true, 512, JSON_BIGINT_AS_STRING);
 
 		if (!is_array($arr)) {
 			throw new InstagramException('Response code is ' . $response->code . '. Body: ' . static::getErrorBody($response->body) . ' Something went wrong. Please report issue.');
@@ -625,7 +577,7 @@ class Instagram
 			// use a raw constant in the code is not a good idea!!
 			//if ($response->code !== 200) {
 			if (static::HTTP_OK !== $response->code) {
-				throw new InstagramException('Response code is ' . $response->code . '. Body: ' . static::getErrorBody($response->body).' Something went wrong. Please report issue.');
+				throw new InstagramException('Response code is ' . $response->code . '. Body: ' . static::getErrorBody($response->body) .print_r($response->body).' Something went wrong. Please report issue.');
 			}
 			$cookies = static::parseCookies($response->headers['Set-Cookie']);
 			$this->userSession['csrftoken'] = $cookies['csrftoken'];
