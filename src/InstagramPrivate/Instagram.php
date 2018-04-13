@@ -14,9 +14,7 @@ use InstagramPrivate\Model\UserStories;
 use phpFastCache\CacheManager;
 use Unirest\Exception;
 use Unirest\Request;
-use MongoDB\Driver;
-use MongoDB\BSON;
-use Response;
+
 
 class Instagram
 {
