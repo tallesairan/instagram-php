@@ -1369,7 +1369,7 @@ class Instagram
 			}
 
 			if (is_object($response->body)) {
-				if (!$response->body->authenticated) {
+				if (!isset($response->body->authenticated)) {
 					return ([
 						'status'=>7,
 						'code'=>$response->code,
